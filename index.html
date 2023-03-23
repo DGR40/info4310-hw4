@@ -96,7 +96,7 @@
 
         drug_data.forEach((d) => {
           let approved = d.authorisation_status;
-          if (approved !== "authorised") {
+          if (approved == "authorised") {
             hist_approved[d.therapeutic_area] += 1;
           } else {
             hist_withdrawn[d.therapeutic_area] += 1;
@@ -162,28 +162,35 @@
           .attr("transform", "rotate(-90)")
           .text("Count");
 
-        let rectWidth = barGraphWidth / 10;
+        let rectWidth = barGraphWidth / 20 - 10;
 
         // // make some bars
         for (key in hist_approved) {
+          let a_count = hist_approved[key];
+          let w_count = hist_withdrawn[key];
+
           barGraph
             .append("rect")
-            .attr("x", areaScale(key) + barGraphMargin.left)
-            .attr("y", barGraphMargin.top)
+            .attr("x", areaScale(key) + barGraphMargin.left + 10)
+            .attr("y", countScale(a_count) + barGraphMargin.top)
             .attr("width", rectWidth)
-            .attr("height", countScale(hist_approved[key]))
-            .style("fill", "red")
-            .attr("class", `bar ${key}`);
+            .attr("height", barGraphHeight - countScale(a_count))
+            .style("fill", "#90EF90")
+            .attr("class", `approved-bar ${key}`);
+
+          barGraph
+            .append("rect")
+            .attr("x", areaScale(key) + barGraphMargin.left + 35)
+            .attr("y", countScale(w_count) + barGraphMargin.top)
+            .attr("width", rectWidth)
+            .attr("height", barGraphHeight - countScale(w_count))
+            .style("fill", "#FC6C85")
+            .attr("class", `withdrawn-bar ${key}`);
+
+          //  .attr("y", valueScale(dict[key]))
+          //                 .attr("height", valueScale(0) - valueScale(dict[key]))
+          //                 .attr("width", speciesScale.bandwidth());
         }
-        //   console.log(key);
-        //   histo
-        //     .append("line")
-        //     .attr("x", areaScale(key))
-        //     .attr("y", countScale(hist_approved[key]))
-        //     .attr("width", 10)
-        //     .style("stroke", "black")
-        //     .style("stroke-width", 1);
-        // }
       };
       createGraph();
     </script>
